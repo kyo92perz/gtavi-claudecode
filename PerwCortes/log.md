@@ -10,3 +10,5 @@
 | 2026-11-19 | (pronto, aguardando post) | todas | Bistecone matou o cachorro | media/edits/bistecone_cachorro.mp4 | @bistecone | |
 | 2026-11-19 | (pronto, aguardando post) | todas | Bistecone cabeçada do cervo | media/edits/bistecone_cervo.mp4 | @bistecone | |
 | 2026-11-19 | (pronto, aguardando post) | todas | Auronplay velhinhos na água | media/edits/auronplay_velhinhos.mp4 | @auronplay | |
+| 2026-11-19 | (pronto, aguardando post) | todas | Pay n Spray voltou | media/edits/illojuan_paynspray.mp4 | @illojuan | |
+| 2026-11-19 | (pronto, aguardando post) | todas | Alanzoka bateu na polícia | media/edits/alanzoka_bateu_policia.mp4 | @alanzoka | |
