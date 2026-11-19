@@ -7,3 +7,4 @@ test/
 *.ts
 !docs/*.mp4
 *.log
+PerwCortes/rounds/
