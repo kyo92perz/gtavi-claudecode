@@ -106,7 +106,7 @@ def z(a):
 
 
 def smooth(a, k):
-    k = max(1, int(k))
+    k = max(1, min(int(k), len(a)))  # a window longer than the clip would grow the output
     return np.convolve(a, np.ones(k) / k, mode="same")
 
 
