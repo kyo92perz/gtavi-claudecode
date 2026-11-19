@@ -9,7 +9,7 @@ usage: python live.py <youtube-live-url> --minutes 60 [--before 15 --after 20 --
                       --ratio 3 --min-msgs 8 --lag 8 --cooldown 45]
 Stop early with Ctrl+C. Pending spikes are still cut on shutdown.
 """
-import argparse, json, re, subprocess, sys, time
+import argparse, json, os, re, subprocess, sys, time
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
@@ -139,7 +139,10 @@ class Recorder:
         if not urls:
             sys.exit("could not get a stream URL (is the video live?)")
         cmd = [tool("ffmpeg"), "-y", "-loglevel", "warning"]
+        proxy = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
         for u in urls:
+            if proxy:  # ffmpeg ignores HTTPS_PROXY; pass it explicitly (it tunnels https with CONNECT)
+                cmd += ["-http_proxy", proxy]
             cmd += ["-reconnect", "1", "-reconnect_streamed", "1", "-reconnect_delay_max", "5", "-i", u]
         for i in range(len(urls)):
             cmd += ["-map", str(i)]

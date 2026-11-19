@@ -4,7 +4,7 @@ top_streams(): Twitch's public web GQL endpoint with the public web Client-Id (s
 irc_chat():    anonymous IRC read-only chat (justinfan nick, no password).
 vod_chat():    not implemented, see note at the bottom.
 """
-import json, random, socket, ssl, sys, threading, time
+import json, os, random, socket, ssl, sys, threading, time
 from datetime import datetime, timezone
 
 GQL = "https://gql.twitch.tv/gql"
@@ -92,6 +92,32 @@ def _parse_privmsg(line):
     return user, text.strip()
 
 
+def _https_proxy():
+    """(host, port) of an HTTPS proxy from the environment, or None."""
+    from urllib.parse import urlparse
+    url = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
+    if not url:
+        return None
+    p = urlparse(url if "://" in url else "http://" + url)
+    return (p.hostname, p.port or 8080) if p.hostname else None
+
+
+def _proxy_tunnel(proxy, host, port):
+    """Open a CONNECT tunnel to host:port through an HTTP proxy and return the socket."""
+    s = socket.create_connection(proxy, timeout=15)
+    s.sendall(f"CONNECT {host}:{port} HTTP/1.1\r\nHost: {host}:{port}\r\n\r\n".encode())
+    resp = b""
+    while b"\r\n\r\n" not in resp:
+        chunk = s.recv(4096)
+        if not chunk:
+            break
+        resp += chunk
+    if b" 200" not in resp.split(b"\r\n", 1)[0]:
+        s.close()
+        raise OSError(f"proxy CONNECT failed: {resp[:80]!r}")
+    return s
+
+
 def irc_chat(channel, out_path, stop_event=None, host="irc.chat.twitch.tv", port=6697):
     """Append {t, user, text} JSON lines to out_path until stop_event is set. Reconnects on drop.
     Uses TLS (6697); falls back to plain 6667 if TLS fails."""
@@ -102,7 +128,12 @@ def irc_chat(channel, out_path, stop_event=None, host="irc.chat.twitch.tv", port
         while not stop_event.is_set():
             sock = None
             try:
-                raw = socket.create_connection((host, port if use_tls else 6667), timeout=15)
+                proxy = _https_proxy()
+                if proxy:  # tunnel through an HTTPS proxy; Twitch IRC also answers TLS on 443
+                    use_tls = True
+                    raw = _proxy_tunnel(proxy, host, 443)
+                else:
+                    raw = socket.create_connection((host, port if use_tls else 6667), timeout=15)
                 sock = ssl.create_default_context().wrap_socket(raw, server_hostname=host) if use_tls else raw
                 sock.settimeout(5)
                 sock.sendall(f"NICK justinfan{random.randint(10000, 99999)}\r\n".encode())

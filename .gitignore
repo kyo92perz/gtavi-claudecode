@@ -6,3 +6,4 @@ test/
 *.wav
 *.ts
 !docs/*.mp4
+*.log
