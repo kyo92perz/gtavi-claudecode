@@ -12,3 +12,4 @@
 | 2026-11-19 | (pronto, aguardando post) | todas | Auronplay velhinhos na água | media/edits/auronplay_velhinhos.mp4 | @auronplay | |
 | 2026-11-19 | (pronto, aguardando post) | todas | Pay n Spray voltou | media/edits/illojuan_paynspray.mp4 | @illojuan | |
 | 2026-11-19 | (pronto, aguardando post) | todas | Alanzoka bateu na polícia | media/edits/alanzoka_bateu_policia.mp4 | @alanzoka | |
+| 2026-11-19 | (pronto, aguardando post) | todas | illojuan roubou a moto | media/edits/illojuan_roubou_moto.mp4 | @illojuan | |
